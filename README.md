@@ -1,4 +1,4 @@
-# ca-freind-foe-analysis
+# ca-friend-foe-analysis
 Project Course Work
 
 
