@@ -21,6 +21,30 @@ The analysis focuses on the ideological and "racial" primary enemies of Nazi ide
 - Training of a classical ML classifier (e.g., Random Forest) to distinguish "Us" from "Them"
 - Feature importance analysis to identify which visual characteristics propaganda most strongly employed for enemy image construction
 
+### Visual Features (17 total)
+
+**Lighting Features (5):**
+- Mean brightness, brightness std, contrast
+- Low-key ratio (dark/dramatic lighting)
+- High-key ratio (bright/even lighting)
+
+**Color Features (4):**
+- Saturation mean/std
+- Hue mean/std
+
+**Composition Features (4):**
+- Edge density
+- Center brightness
+- Vertical/horizontal symmetry
+
+**Texture Features (2):**
+- Texture contrast
+- Texture homogeneity
+
+**Region Features (2):**
+- Dark regions count
+- Bright regions count
+
 ---
 
 ## Dataset
@@ -58,27 +82,55 @@ The analysis focuses on the ideological and "racial" primary enemies of Nazi ide
 
 ---
 
+## Quick Start (POC)
+
+### Test the Pipeline
+
+```bash
+# 1. Install dependencies
+pip install -r requirements.txt
+
+# 2. Run the complete pipeline test with synthetic data
+python test_pipeline.py
+
+# 3. Or try the interactive notebook
+jupyter notebook notebooks/00_quick_start_demo.ipynb
+```
+
+See [USAGE.md](USAGE.md) for detailed instructions on using real video data.
+
+### Pipeline Overview
+
+1. **Frame Extraction** - Extract frames from videos at regular intervals
+2. **Annotation** - Label frames as 'us' (ingroup) or 'them' (outgroup)
+3. **Feature Extraction** - Extract 17 visual features (lighting, composition, color, texture)
+4. **Classification** - Train Random Forest classifier to distinguish groups
+5. **Analysis** - Identify most important visual characteristics
+
+---
+
 ## Project Structure
 
 ```
 ├── data/
-│   ├── raw/                # Extracted frames
-│   ├── annotated/          # Annotated frames with labels
-│   └── features/           # Extracted features
+│   ├── raw/                # Extracted frames from videos
+│   ├── annotated/          # CSV files with frame annotations
+│   └── features/           # CSV files with extracted features
 ├── notebooks/
-│   ├── 01_data_extraction.ipynb
-│   ├── 02_annotation.ipynb
-│   ├── 03_feature_extraction.ipynb
-│   ├── 04_model_training.ipynb
-│   └── 05_analysis.ipynb
+│   └── 00_quick_start_demo.ipynb    # Interactive demo notebook
 ├── src/
-│   ├── feature_extraction.py
-│   ├── model.py
-│   └── utils.py
+│   ├── frame_extraction.py    # Video → frames extraction
+│   ├── annotation.py          # Annotation tools and CSV management
+│   ├── feature_extraction.py  # Visual feature extraction (17 features)
+│   ├── model.py              # Random Forest classifier + evaluation
+│   ├── generate_test_data.py # Synthetic test data generator
+│   └── utils.py              # Utility functions
 ├── results/
-│   ├── figures/
-│   └── tables/
+│   ├── figures/          # Generated plots (feature importance, etc.)
+│   └── tables/           # Results tables
+├── test_pipeline.py      # End-to-end pipeline test script
 ├── README.md
+├── USAGE.md              # Detailed usage instructions
 └── requirements.txt
 ```
 

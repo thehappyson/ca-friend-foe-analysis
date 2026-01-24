@@ -1,0 +1,80 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb_checkpoints/
+
+# Data files (large files we don't want in git)
+data/raw/**/*.jpg
+data/raw/**/*.png
+data/raw/**/*.mp4
+data/raw/**/*.avi
+data/raw/**/*.mkv
+*.mp4
+*.avi
+*.mkv
+*.mov
+
+# But keep directory structure
+!data/raw/.gitkeep
+!data/annotated/.gitkeep
+!data/features/.gitkeep
+
+# Results (keep these out of git, too large)
+results/**/*.png
+results/**/*.jpg
+results/**/*.pdf
+results/*.joblib
+!results/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+Thumbs.db
+.AppleDouble
+.LSOverride
+
+# Virtual environments
+venv/
+ENV/
+env/
+
+# Model files
+*.joblib
+*.pkl
+*.h5
+*.pth
+
+# Temporary files
+*.tmp
+*.bak
+*.log
