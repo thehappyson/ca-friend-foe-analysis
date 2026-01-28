@@ -20,6 +20,9 @@ The analysis focuses on the ideological and "racial" primary enemies of Nazi ide
 - Extraction of visual features (lighting, camera angle, shot scale, composition, pose) from annotated frames
 - Training of a classical ML classifier (e.g., Random Forest) to distinguish "Us" from "Them"
 - Feature importance analysis to identify which visual characteristics propaganda most strongly employed for enemy image construction
+- Cross-validation strategy with stratified k-fold to ensure robust results
+- Inter-annotator agreement metrics to validate manual frame labeling
+- Class imbalance handling through stratified sampling and balanced class weights
 
 ### Visual Features (17 total)
 
@@ -51,6 +54,14 @@ The analysis focuses on the ideological and "racial" primary enemies of Nazi ide
 
 **Source:** [Internet Archive – German Films 1933-1945](https://archive.org/details/movies?and%5B%5D=mediatype%3A%22movies%22&and%5B%5D=language%3A%22German%22&and%5B%5D=year%3A%5B1933+TO+1945%5D)
 
+### Sampling Strategy
+
+- **Frame extraction rate:** 1 frame per 2 seconds (0.5 fps) to capture visual variety while maintaining manageable dataset size
+- **Target:** Minimum 500 frames per category ("Us" vs "Them") for statistical validity
+- **Temporal coverage:** Frames sampled across entire film duration to account for narrative progression
+- **Quality filters:** Exclude transition frames (fades, cuts) and text-only title cards
+- **Balance consideration:** Equal sampling from propaganda vs. entertainment films within each category
+
 ### Enemy Image Films ("Them" – Outgroup)
 
 **Antisemitic Films:**
@@ -79,6 +90,32 @@ The analysis focuses on the ideological and "racial" primary enemies of Nazi ide
 - *Die große Liebe / The Great Love* (1942) – German soldiers and home front
 - *Wunschkonzert / Request Concert* (1940) – National community on the home front
 - *Stukas* (1941) – Heroic Luftwaffe pilots
+
+---
+
+## Expected Outcomes
+
+### Primary Research Goals
+
+1. **Feature Importance Ranking** - Which visual strategies were most distinctive for enemy construction?
+   - Hypothesis: "Them" portrayed with low-key lighting (dark, dramatic)
+   - Hypothesis: "Us" portrayed with high-key lighting (bright, even) and centered composition
+
+2. **Classification Performance** - How "learnable" is the visual distinction?
+   - Target: >70% accuracy indicates systematic visual differentiation
+   - Feature ablation studies to test individual feature category contributions
+
+3. **Historical Insights** - Quantitative evidence for propaganda strategies
+   - Comparison across film types (documentary vs. feature films)
+   - Temporal analysis (early war 1933-1939 vs. late war 1940-1945)
+   - Identification of consistent vs. context-dependent visual patterns
+
+### Potential Findings
+
+- Systematic use of lighting contrast to dehumanize outgroup
+- Camera angles and composition reinforcing power dynamics
+- Color saturation differences between idealized ingroup and stigmatized outgroup
+- Texture and edge density variations (chaos vs. order visual metaphors)
 
 ---
 
