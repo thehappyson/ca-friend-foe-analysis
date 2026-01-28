@@ -178,8 +178,8 @@ See [USAGE.md](USAGE.md) for detailed instructions on using real video data.
 | | Kevin Kunkel | Felix Filius |
 |---|---|---|
 | **Program** | M.Sc. Computer Science | M.Sc. Data Science |
-| **E-Mail** | [email] | [email] |
-| **Student ID** | [student ID] | [student ID] |
+| **E-Mail** | mm21lugi@studserv.uni-leipzig.de | zq25ohog@studserv.uni-leipzig.de |
+| **Student ID** | 3738957 | [student ID] |
 
 ---
 
