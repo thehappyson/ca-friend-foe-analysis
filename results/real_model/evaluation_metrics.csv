@@ -1,0 +1,2 @@
+accuracy,precision,recall,f1,cv_mean,cv_std
+1.0,1.0,1.0,1.0,1.0,0.0

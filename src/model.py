@@ -337,6 +337,45 @@ def train_and_evaluate_pipeline(features_csv, annotations_csv, test_size=0.2, ou
     return classifier, results
 
 
+def predict_from_features(features, model_path):
+    """
+    Predict labels for feature vectors using a saved model.
+
+    Args:
+        features: Feature matrix (numpy array) - shape (n_samples, n_features)
+        model_path: Path to saved model file (.joblib)
+
+    Returns:
+        Predicted labels (numpy array) - 0 for 'them', 1 for 'us'
+    """
+    # Load model
+    model_data = joblib.load(model_path)
+
+    # Handle both old and new model formats
+    if isinstance(model_data, dict):
+        model = model_data['model']
+        scaler = model_data['scaler']
+    elif hasattr(model_data, 'model'):
+        # It's a FriendFoeClassifier object
+        model = model_data.model
+        scaler = model_data.scaler
+    else:
+        # It's just the model
+        model = model_data
+        scaler = None
+
+    # Scale features if scaler available
+    if scaler is not None:
+        features_scaled = scaler.transform(features)
+    else:
+        features_scaled = features
+
+    # Predict
+    predictions = model.predict(features_scaled)
+
+    return predictions
+
+
 if __name__ == "__main__":
     import sys
 

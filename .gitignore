@@ -38,15 +38,32 @@ data/videos/**/*.mov
 *.mkv
 *.mov
 
-# Extracted frames
+# Extracted frames (training data - can be hundreds of images)
 data/raw/**/*.jpg
 data/raw/**/*.png
+data/training/frames/**/*.jpg
+data/training/frames/**/*.png
+data/manual_annotations/frames/**/*.jpg
+data/manual_annotations/frames/**/*.png
+
+# Training data CSVs (can be regenerated)
+data/training/features.csv
+data/training/annotations.csv
+data/manual_annotations/features.csv
+data/manual_annotations/annotations.csv
+
+# Presentation slides output
+results/presentation_slides/sample_frames/**/*.jpg
+results/presentation_slides/sample_frames/**/*.png
+results/presentation_slides/visualizations/**/*.png
 
 # But keep directory structure
 !data/videos/.gitkeep
 !data/raw/.gitkeep
 !data/annotated/.gitkeep
 !data/features/.gitkeep
+!data/training/.gitkeep
+!data/manual_annotations/.gitkeep
 
 # Results (keep these out of git, too large)
 results/**/*.png
