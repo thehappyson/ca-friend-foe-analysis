@@ -27,5 +27,5 @@ pathlib>=1.0.1
 # tensorflow>=2.7.0
 
 # Optional: Advanced video processing (uncomment if needed)
-# scenedetect>=0.5.6
+scenedetect[opencv]>=0.6.0
 # moviepy>=1.0.3

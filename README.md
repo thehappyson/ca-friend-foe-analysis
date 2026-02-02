@@ -121,16 +121,28 @@ The analysis focuses on the ideological and "racial" primary enemies of Nazi ide
 
 ## Quick Start (POC)
 
+### Setup Virtual Environment (Recommended)
+
+```bash
+# 1. Create virtual environment
+python3 -m venv venv
+
+# 2. Activate it
+source venv/bin/activate  # Linux/Mac
+# OR on Windows: venv\Scripts\activate
+
+# 3. Install dependencies
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
 ### Test the Pipeline
 
 ```bash
-# 1. Install dependencies
-pip install -r requirements.txt
-
-# 2. Run the complete pipeline test with synthetic data
+# 1. Run the complete pipeline test with synthetic data
 python test_pipeline.py
 
-# 3. Or try the interactive notebook
+# 2. Or try the interactive notebook
 jupyter notebook notebooks/00_quick_start_demo.ipynb
 ```
 
@@ -150,7 +162,8 @@ See [USAGE.md](USAGE.md) for detailed instructions on using real video data.
 
 ```
 ├── data/
-│   ├── raw/                # Extracted frames from videos
+│   ├── videos/             # Original video files (MP4)
+│   ├── raw/                # Extracted frames from videos (JPG)
 │   ├── annotated/          # CSV files with frame annotations
 │   └── features/           # CSV files with extracted features
 ├── notebooks/
@@ -179,7 +192,7 @@ See [USAGE.md](USAGE.md) for detailed instructions on using real video data.
 |---|---|---|
 | **Program** | M.Sc. Computer Science | M.Sc. Data Science |
 | **E-Mail** | mm21lugi@studserv.uni-leipzig.de | zq25ohog@studserv.uni-leipzig.de |
-| **Student ID** | 3738957 | [student ID] |
+| **Student ID** | 3738957 | 3773660 |
 
 ---
 

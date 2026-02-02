@@ -114,7 +114,7 @@ def extract_frames_uniform(video_path, output_dir, num_frames=100):
     print(f"Extracted {len(extracted_paths)} frames to {output_dir}")
     return extracted_paths
 
-
+## Wie funktioniert der capture und was sind die wichtigsten Eigenschaften
 def get_video_info(video_path):
     """Get basic information about a video file."""
     cap = cv2.VideoCapture(str(video_path))

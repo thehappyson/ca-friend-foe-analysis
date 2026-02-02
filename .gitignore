@@ -28,17 +28,22 @@ wheels/
 *.ipynb_checkpoints/
 
 # Data files (large files we don't want in git)
-data/raw/**/*.jpg
-data/raw/**/*.png
-data/raw/**/*.mp4
-data/raw/**/*.avi
-data/raw/**/*.mkv
+# Videos
+data/videos/**/*.mp4
+data/videos/**/*.avi
+data/videos/**/*.mkv
+data/videos/**/*.mov
 *.mp4
 *.avi
 *.mkv
 *.mov
 
+# Extracted frames
+data/raw/**/*.jpg
+data/raw/**/*.png
+
 # But keep directory structure
+!data/videos/.gitkeep
 !data/raw/.gitkeep
 !data/annotated/.gitkeep
 !data/features/.gitkeep
