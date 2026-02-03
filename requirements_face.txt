@@ -1,0 +1,8 @@
+# Face detection dependencies
+mtcnn>=0.1.1
+# Optional: For more robust detection (uncomment if MTCNN struggles)
+# retinaface>=0.0.12
+# mediapipe>=0.10.0
+
+# For facial landmarks (advanced features)
+# dlib>=19.24.0
