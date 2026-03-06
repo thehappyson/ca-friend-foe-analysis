@@ -33,7 +33,7 @@ class FrameAnnotator:
 
         Args:
             frame_path: Path to the frame image
-            label: Label ('us', 'them', 'neutral', 'unclear')
+            label: Label ('us', 'them', 'both', 'neutral', 'unclear')
             confidence: Confidence in annotation (0-1)
             notes: Optional notes
             annotator: Name of annotator
@@ -128,10 +128,10 @@ def create_annotation_template(frame_dir, output_file):
 
     df = pd.DataFrame({
         'frame_path': [str(f.resolve()) for f in frames],
-        'label': [''],
+        'label': [''] * len(frames),
         'confidence': [1.0] * len(frames),
-        'notes': [''],
-        'annotator': ['']
+        'notes': [''] * len(frames),
+        'annotator': [''] * len(frames)
     })
 
     df.to_csv(output_file, index=False)
