@@ -7,7 +7,17 @@ import ipywidgets as widgets
 
 
 class FrameAnnotator:
-    """Simple CSV-based frame annotation system."""
+    """
+    Simple CSV-based frame annotation system.
+
+    Label System:
+        - 'us': Ingroup visual treatment (trains as positive class)
+        - 'them': Outgroup visual treatment (trains as negative class)
+        - 'other': No people, landscapes, title cards, irrelevant content (excluded from training)
+        - 'unlabeled' or '': Not yet annotated (excluded from training)
+
+    Only 'us' and 'them' labels are used for model training.
+    """
 
     def __init__(self, annotation_file):
         """
@@ -33,7 +43,11 @@ class FrameAnnotator:
 
         Args:
             frame_path: Path to the frame image
-            label: Label ('us', 'them', 'both', 'neutral', 'unclear')
+            label: Label ('us', 'them', 'other', 'unlabeled' or '')
+                   - 'us': Clear ingroup visual treatment
+                   - 'them': Clear outgroup visual treatment
+                   - 'other': No people/irrelevant content (landscapes, title cards, etc.)
+                   - 'unlabeled' or '': Not yet annotated
             confidence: Confidence in annotation (0-1)
             notes: Optional notes
             annotator: Name of annotator
@@ -96,7 +110,7 @@ class FrameAnnotator:
 
         Args:
             output_file: Optional CSV file to save to
-            binary_labels: Convert to binary us=1, them=0 (removes neutral/unclear)
+            binary_labels: Convert to binary us=1, them=0 (removes 'other' and 'unlabeled')
 
         Returns:
             DataFrame with frame_path and label columns

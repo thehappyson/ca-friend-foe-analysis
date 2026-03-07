@@ -151,9 +151,9 @@ See [USAGE.md](USAGE.md) for detailed instructions on using real video data.
 ### Pipeline Overview
 
 1. **Frame Extraction** - Extract frames from videos at regular intervals
-2. **Annotation** - Label frames as 'us' (ingroup) or 'them' (outgroup)
+2. **Annotation** - Label frames as 'us' (ingroup), 'them' (outgroup), 'other' (irrelevant), or 'unlabeled'
 3. **Feature Extraction** - Extract 17 visual features (lighting, composition, color, texture)
-4. **Classification** - Train Random Forest classifier to distinguish groups
+4. **Classification** - Train Random Forest classifier to distinguish 'us' vs 'them' (other labels excluded)
 5. **Analysis** - Identify most important visual characteristics
 
 ---

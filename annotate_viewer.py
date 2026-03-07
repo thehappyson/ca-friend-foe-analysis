@@ -38,9 +38,9 @@ class FrameViewer:
         self.current_idx = 0
         self.window_name = "Frame Annotator"
 
-        # Find first unannotated frame
+        # Find first unannotated frame (not 'us', 'them', or 'other')
         for idx, row in self.annotations.iterrows():
-            if row['label'] == '' or pd.isna(row['label']):
+            if row['label'] not in ['us', 'them', 'other']:
                 self.current_idx = idx
                 break
 
@@ -52,11 +52,10 @@ class FrameViewer:
         print("\n" + "="*60)
         print("KEYBOARD SHORTCUTS:")
         print("="*60)
-        print("  1 or U : Label as 'us' (ingroup)")
-        print("  2 or T : Label as 'them' (outgroup)")
-        print("  3 or B : Label as 'both' (both groups)")
-        print("  4 or N : Label as 'neutral'")
-        print("  5 or ? : Label as 'unclear'")
+        print("  1 or U : Label as 'us' (ingroup visual treatment)")
+        print("  2 or T : Label as 'them' (outgroup visual treatment)")
+        print("  3 or O : Label as 'other' (no people/irrelevant)")
+        print("  0      : Mark as 'unlabeled' (clear current label)")
         print("")
         print("  → or D : Next frame (without labeling)")
         print("  ← or A : Previous frame")
@@ -68,7 +67,8 @@ class FrameViewer:
     def get_progress_stats(self):
         """Get annotation progress statistics."""
         total = len(self.annotations)
-        labeled = len(self.annotations[self.annotations['label'].notna() & (self.annotations['label'] != '')])
+        # Only count 'us', 'them', 'other' as labeled (not 'unlabeled' or empty)
+        labeled = len(self.annotations[self.annotations['label'].isin(['us', 'them', 'other'])])
         stats = self.annotations['label'].value_counts().to_dict()
         return total, labeled, stats
 
@@ -165,12 +165,10 @@ class FrameViewer:
                 self.label_current('us')
             elif key == ord('2') or key == ord('t') or key == ord('T'):
                 self.label_current('them')
-            elif key == ord('3') or key == ord('b') or key == ord('B'):
-                self.label_current('both')
-            elif key == ord('4') or key == ord('n') or key == ord('N'):
-                self.label_current('neutral')
-            elif key == ord('5') or key == ord('?'):
-                self.label_current('unclear')
+            elif key == ord('3') or key == ord('o') or key == ord('O'):
+                self.label_current('other')
+            elif key == ord('0'):
+                self.label_current('unlabeled')
 
             # Navigation
             elif key == 83 or key == ord('d') or key == ord('D'):  # Right arrow or D
@@ -195,14 +193,17 @@ class FrameViewer:
 
         # Final stats
         total, labeled, stats = self.get_progress_stats()
+        unlabeled_count = stats.get('unlabeled', 0) + stats.get('', 0)
         print(f"\n{'='*60}")
         print(f"FINAL STATISTICS")
         print(f"{'='*60}")
         print(f"Total frames: {total}")
         print(f"Labeled: {labeled} ({(labeled/total)*100:.1f}%)")
-        print(f"Unlabeled: {total - labeled}")
+        print(f"Unlabeled remaining: {unlabeled_count}")
         print(f"\nLabel distribution:")
         for label, count in sorted(stats.items()):
+            if label == '':
+                label = '(empty)'
             print(f"  {label}: {count}")
         print(f"{'='*60}\n")
 
