@@ -34,6 +34,7 @@ class FrameViewer:
 
         self.current_idx = 0
         self.window_name = "Frame Annotator"
+        self._unsaved_changes = 0
 
         # Find first unannotated frame (not 'us', 'them', or 'other')
         for idx, row in self.annotations.iterrows():
@@ -127,6 +128,7 @@ class FrameViewer:
         
         self.annotation_csv.parent.mkdir(parents=True, exist_ok=True)
         self.annotations.to_csv(self.annotation_csv, index=False)
+        self._unsaved_changes = 0
         total, labeled, stats = self.get_progress_stats()
         print(f"\n✓ Saved! Progress: {labeled}/{total} frames labeled")
         print(f"  Labels: {stats}")
@@ -136,6 +138,10 @@ class FrameViewer:
         self.annotations.at[self.current_idx, 'label'] = label
         print(f"Frame {self.current_idx + 1} labeled as '{label}'")
         self.current_idx += 1
+        self._unsaved_changes += 1
+        if self._unsaved_changes >= 10:
+            self.save_annotations()
+            self._unsaved_changes = 0
         return True
 
     def next_frame(self):
@@ -153,6 +159,7 @@ class FrameViewer:
         running = True
         while running:
             if not self.show_frame():
+                self.save_annotations()
                 break
 
             key = cv2.waitKey(0) & 0xFF
@@ -185,6 +192,10 @@ class FrameViewer:
             elif key == 27:  # ESC
                 print("\nQuitting without saving...")
                 running = False
+
+        # Save any remaining unsaved changes (unless user chose ESC)
+        if running and self._unsaved_changes > 0:
+            self.save_annotations()
 
         cv2.destroyAllWindows()
 
