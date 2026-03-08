@@ -5,7 +5,8 @@ Usage:
     python extract_frames.py <video_file> <frame_list.txt>
 
 The txt file should have two frame numbers per line (space or tab separated).
-Each number is treated as an individual frame to extract.
+The second number marks the end of a shot. We extract that frame minus an
+offset to avoid landing on the transition to the next shot.
 """
 
 import cv2
@@ -13,8 +14,14 @@ import sys
 import os
 
 
+# ============================================================
+# >>> OFFSET — subtracted from the end-of-shot frame number <<<
+FRAME_OFFSET = 50
+# ============================================================
+
+
 def load_frame_numbers(txt_path: str) -> list[int]:
-    """Read the txt file and collect all unique frame numbers."""
+    """Read the txt file, take the last number per line, and subtract the offset."""
     frames = set()
     with open(txt_path, "r") as f:
         for line in f:
@@ -22,8 +29,9 @@ def load_frame_numbers(txt_path: str) -> list[int]:
             if not line:
                 continue
             parts = line.split()
-            for part in parts:
-                frames.add(int(part))
+            end_frame = int(parts[-1]) - FRAME_OFFSET
+            if end_frame >= 0:
+                frames.add(end_frame)
     return sorted(frames)
 
 
@@ -64,12 +72,13 @@ def extract_frames(video_path: str, frame_numbers: list[int], output_dir: str):
 if __name__ == "__main__":
     if len(sys.argv) < 3:
         print("Usage: python extract_frames.py <video.mp4> <frames.txt>")
-        syspip.exit(1)
+        sys.exit(1)
 
     video_path = sys.argv[1]
     txt_path = sys.argv[2]
 
     # ============================================================
+    # >>> OUTPUT DIRECTORY — change this path to save frames elsewhere <<<
     output_dir = "./data/frames"
     # ============================================================
 
