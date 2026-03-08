@@ -14,17 +14,11 @@ from sklearn.metrics import (
 from sklearn.preprocessing import StandardScaler
 import joblib
 
-
 class FriendFoeClassifier:
-    """Random Forest classifier for Us vs Them classification."""
+    
 
     def __init__(self, random_state=42):
-        """
-        Initialize classifier.
-
-        Args:
-            random_state: Random seed for reproducibility
-        """
+        
         self.random_state = random_state
         self.model = RandomForestClassifier(
             n_estimators=100,
@@ -37,16 +31,7 @@ class FriendFoeClassifier:
         self.is_trained = False
 
     def prepare_data(self, features_csv, annotations_csv):
-        """
-        Prepare data for training by merging features with annotations.
-
-        Args:
-            features_csv: Path to CSV with extracted features
-            annotations_csv: Path to CSV with annotations
-
-        Returns:
-            X (features), y (labels), frame_paths
-        """
+        
         # Load data
         features_df = pd.read_csv(features_csv)
         annotations_df = pd.read_csv(annotations_csv)
@@ -78,16 +63,7 @@ class FriendFoeClassifier:
         return X, y, frame_paths
 
     def train(self, X, y):
-        """
-        Train the classifier.
-
-        Args:
-            X: Feature matrix
-            y: Labels (1=us, 0=them)
-
-        Returns:
-            Training accuracy
-        """
+        
         # Normalize features
         X_scaled = self.scaler.fit_transform(X)
 
@@ -102,17 +78,7 @@ class FriendFoeClassifier:
         return train_acc
 
     def evaluate(self, X, y, label_names=['Them', 'Us']):
-        """
-        Evaluate the classifier.
-
-        Args:
-            X: Feature matrix
-            y: True labels
-            label_names: Names for classes
-
-        Returns:
-            Dictionary with evaluation metrics
-        """
+        
         if not self.is_trained:
             raise ValueError("Model not trained yet!")
 
@@ -146,17 +112,7 @@ class FriendFoeClassifier:
         }
 
     def cross_validate(self, X, y, cv=5):
-        """
-        Perform cross-validation.
-
-        Args:
-            X: Feature matrix
-            y: Labels
-            cv: Number of folds
-
-        Returns:
-            Cross-validation scores
-        """
+        
         X_scaled = self.scaler.fit_transform(X)
         scores = cross_val_score(self.model, X_scaled, y, cv=cv, scoring='accuracy')
 
@@ -167,15 +123,7 @@ class FriendFoeClassifier:
         return scores
 
     def get_feature_importance(self, top_n=None):
-        """
-        Get feature importance from trained model.
-
-        Args:
-            top_n: Return top N features (None = all)
-
-        Returns:
-            DataFrame with feature importance
-        """
+        
         if not self.is_trained:
             raise ValueError("Model not trained yet!")
 
@@ -191,14 +139,7 @@ class FriendFoeClassifier:
         return df
 
     def plot_feature_importance(self, top_n=15, figsize=(10, 6), output_path=None):
-        """
-        Plot feature importance.
-
-        Args:
-            top_n: Number of top features to plot
-            figsize: Figure size
-            output_path: Optional path to save figure
-        """
+        
         importance_df = self.get_feature_importance(top_n=top_n)
 
         plt.figure(figsize=figsize)
@@ -216,14 +157,7 @@ class FriendFoeClassifier:
             plt.show()
 
     def plot_confusion_matrix(self, cm, label_names=['Them', 'Us'], output_path=None):
-        """
-        Plot confusion matrix.
-
-        Args:
-            cm: Confusion matrix
-            label_names: Class names
-            output_path: Optional path to save figure
-        """
+        
         plt.figure(figsize=(8, 6))
         sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
                     xticklabels=label_names,
@@ -241,7 +175,7 @@ class FriendFoeClassifier:
             plt.show()
 
     def save_model(self, output_path):
-        """Save trained model to disk."""
+        
         if not self.is_trained:
             raise ValueError("Model not trained yet!")
 
@@ -254,7 +188,7 @@ class FriendFoeClassifier:
         print(f"Model saved to {output_path}")
 
     def load_model(self, model_path):
-        """Load trained model from disk."""
+        
         model_data = joblib.load(model_path)
         self.model = model_data['model']
         self.scaler = model_data['scaler']
@@ -262,20 +196,8 @@ class FriendFoeClassifier:
         self.is_trained = True
         print(f"Model loaded from {model_path}")
 
-
 def train_and_evaluate_pipeline(features_csv, annotations_csv, test_size=0.2, output_dir=None):
-    """
-    Complete pipeline: load data, train, evaluate.
-
-    Args:
-        features_csv: Path to features CSV
-        annotations_csv: Path to annotations CSV
-        test_size: Fraction of data for testing
-        output_dir: Directory to save results
-
-    Returns:
-        Trained classifier and results
-    """
+    
     classifier = FriendFoeClassifier()
 
     # Prepare data
@@ -338,18 +260,8 @@ def train_and_evaluate_pipeline(features_csv, annotations_csv, test_size=0.2, ou
 
     return classifier, results
 
-
 def predict_from_features(features, model_path):
-    """
-    Predict labels for feature vectors using a saved model.
-
-    Args:
-        features: Feature matrix (numpy array) - shape (n_samples, n_features)
-        model_path: Path to saved model file (.joblib)
-
-    Returns:
-        Predicted labels (numpy array) - 0 for 'them', 1 for 'us'
-    """
+    
     # Load model
     model_data = joblib.load(model_path)
 
@@ -376,7 +288,6 @@ def predict_from_features(features, model_path):
     predictions = model.predict(features_scaled)
 
     return predictions
-
 
 if __name__ == "__main__":
     import sys

@@ -4,9 +4,8 @@ from pathlib import Path
 import pandas as pd
 from tqdm import tqdm
 
-
 class VisualFeatureExtractor:
-    """Extract visual features from image frames."""
+    
 
     def __init__(self):
         self.feature_names = [
@@ -39,15 +38,7 @@ class VisualFeatureExtractor:
         ]
 
     def extract_features(self, image_path):
-        """
-        Extract all features from a single image.
-
-        Args:
-            image_path: Path to image file
-
-        Returns:
-            Dictionary of feature values
-        """
+        
         img = cv2.imread(str(image_path))
         if img is None:
             raise ValueError(f"Could not load image: {image_path}")
@@ -115,7 +106,7 @@ class VisualFeatureExtractor:
         return features
 
     def _compute_local_contrast(self, gray):
-        """Compute local contrast using standard deviation in local patches."""
+        
         kernel_size = 15
         mean = cv2.blur(gray.astype(float), (kernel_size, kernel_size))
         mean_sq = cv2.blur((gray.astype(float) ** 2), (kernel_size, kernel_size))
@@ -123,23 +114,14 @@ class VisualFeatureExtractor:
         return np.mean(std)
 
     def _compute_homogeneity(self, gray):
-        """Compute texture homogeneity (inverse of variation)."""
+        
         kernel_size = 5
         local_std = cv2.blur(gray.astype(float), (kernel_size, kernel_size))
         variation = np.std(local_std)
         return 1.0 / (1.0 + variation)
 
     def extract_batch(self, image_paths, output_csv=None):
-        """
-        Extract features from multiple images.
-
-        Args:
-            image_paths: List of image paths
-            output_csv: Optional CSV file to save features
-
-        Returns:
-            DataFrame with features for all images
-        """
+        
         results = []
 
         for img_path in tqdm(image_paths, desc="Extracting features"):
@@ -162,15 +144,8 @@ class VisualFeatureExtractor:
 
         return df
 
-
 def extract_features_from_directory(input_dir, output_csv):
-    """
-    Extract features from all images in a directory.
-
-    Args:
-        input_dir: Directory containing images
-        output_csv: Output CSV file for features
-    """
+    
     input_dir = Path(input_dir)
     image_paths = sorted(list(input_dir.glob("*.jpg")) + list(input_dir.glob("*.png")))
 
@@ -181,7 +156,6 @@ def extract_features_from_directory(input_dir, output_csv):
 
     print(f"Extracted {len(df)} feature vectors")
     return df
-
 
 if __name__ == "__main__":
     import sys

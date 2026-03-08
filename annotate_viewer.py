@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
-"""
-Interactive frame viewer for annotation.
-Shows frames and allows keyboard-based labeling.
-"""
+
 import cv2
 import pandas as pd
 import numpy as np
@@ -11,7 +8,7 @@ import sys
 
 class FrameViewer:
     def __init__(self, frames_dir, annotation_csv):
-        """Initialize frame viewer."""
+        
         self.frames_dir = Path(frames_dir)
         self.annotation_csv = Path(annotation_csv)
 
@@ -48,7 +45,7 @@ class FrameViewer:
         self.show_instructions()
 
     def show_instructions(self):
-        """Display keyboard instructions."""
+        
         print("\n" + "="*60)
         print("KEYBOARD SHORTCUTS:")
         print("="*60)
@@ -65,7 +62,7 @@ class FrameViewer:
         print("="*60 + "\n")
 
     def get_progress_stats(self):
-        """Get annotation progress statistics."""
+        
         total = len(self.annotations)
         # Only count 'us', 'them', 'other' as labeled (not 'unlabeled' or empty)
         labeled = len(self.annotations[self.annotations['label'].isin(['us', 'them', 'other'])])
@@ -73,7 +70,7 @@ class FrameViewer:
         return total, labeled, stats
 
     def show_frame(self):
-        """Display current frame with info overlay."""
+        
         if self.current_idx >= len(self.annotations):
             print("\n✓ All frames reviewed!")
             return False
@@ -127,7 +124,7 @@ class FrameViewer:
         return True
 
     def save_annotations(self):
-        """Save annotations to CSV."""
+        
         self.annotation_csv.parent.mkdir(parents=True, exist_ok=True)
         self.annotations.to_csv(self.annotation_csv, index=False)
         total, labeled, stats = self.get_progress_stats()
@@ -135,22 +132,22 @@ class FrameViewer:
         print(f"  Labels: {stats}")
 
     def label_current(self, label):
-        """Label current frame and move to next."""
+        
         self.annotations.at[self.current_idx, 'label'] = label
         print(f"Frame {self.current_idx + 1} labeled as '{label}'")
         self.current_idx += 1
         return True
 
     def next_frame(self):
-        """Move to next frame."""
+        
         self.current_idx = min(self.current_idx + 1, len(self.annotations) - 1)
 
     def prev_frame(self):
-        """Move to previous frame."""
+        
         self.current_idx = max(self.current_idx - 1, 0)
 
     def run(self):
-        """Run the interactive viewer."""
+        
         cv2.namedWindow(self.window_name, cv2.WINDOW_NORMAL)
 
         running = True
@@ -206,7 +203,6 @@ class FrameViewer:
                 label = '(empty)'
             print(f"  {label}: {count}")
         print(f"{'='*60}\n")
-
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
