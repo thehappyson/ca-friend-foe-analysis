@@ -211,8 +211,9 @@ class FriendFoeClassifier:
         if output_path:
             plt.savefig(output_path, dpi=300, bbox_inches='tight')
             print(f"Saved plot to {output_path}")
-
-        plt.show()
+            plt.close()
+        else:
+            plt.show()
 
     def plot_confusion_matrix(self, cm, label_names=['Them', 'Us'], output_path=None):
         """
@@ -235,8 +236,9 @@ class FriendFoeClassifier:
         if output_path:
             plt.savefig(output_path, dpi=300, bbox_inches='tight')
             print(f"Saved plot to {output_path}")
-
-        plt.show()
+            plt.close()
+        else:
+            plt.show()
 
     def save_model(self, output_path):
         """Save trained model to disk."""
