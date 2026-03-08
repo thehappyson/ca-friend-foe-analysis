@@ -8,7 +8,7 @@ import sys
 
 class FrameViewer:
     def __init__(self, frames_dir, annotation_csv):
-        
+
         self.frames_dir = Path(frames_dir)
         self.annotation_csv = Path(annotation_csv)
 
@@ -46,7 +46,7 @@ class FrameViewer:
         self.show_instructions()
 
     def show_instructions(self):
-        
+
         print("\n" + "="*60)
         print("KEYBOARD SHORTCUTS:")
         print("="*60)
@@ -63,7 +63,7 @@ class FrameViewer:
         print("="*60 + "\n")
 
     def get_progress_stats(self):
-        
+
         total = len(self.annotations)
         # Only count 'us', 'them', 'other' as labeled (not 'unlabeled' or empty)
         labeled = len(self.annotations[self.annotations['label'].isin(['us', 'them', 'other'])])
@@ -71,7 +71,7 @@ class FrameViewer:
         return total, labeled, stats
 
     def show_frame(self):
-        
+
         if self.current_idx >= len(self.annotations):
             print("\n✓ All frames reviewed!")
             return False
@@ -125,7 +125,7 @@ class FrameViewer:
         return True
 
     def save_annotations(self):
-        
+
         self.annotation_csv.parent.mkdir(parents=True, exist_ok=True)
         self.annotations.to_csv(self.annotation_csv, index=False)
         self._unsaved_changes = 0
@@ -134,7 +134,7 @@ class FrameViewer:
         print(f"  Labels: {stats}")
 
     def label_current(self, label):
-        
+
         self.annotations.at[self.current_idx, 'label'] = label
         print(f"Frame {self.current_idx + 1} labeled as '{label}'")
         self.current_idx += 1
@@ -145,15 +145,15 @@ class FrameViewer:
         return True
 
     def next_frame(self):
-        
+
         self.current_idx = min(self.current_idx + 1, len(self.annotations) - 1)
 
     def prev_frame(self):
-        
+
         self.current_idx = max(self.current_idx - 1, 0)
 
     def run(self):
-        
+
         cv2.namedWindow(self.window_name, cv2.WINDOW_NORMAL)
 
         running = True
