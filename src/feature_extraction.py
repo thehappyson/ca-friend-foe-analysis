@@ -8,6 +8,9 @@ class VisualFeatureExtractor:
     
 
     def __init__(self):
+        # Initialize face detector
+        self.face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+
         self.feature_names = [
             # Lighting features
             'mean_brightness',
@@ -21,6 +24,7 @@ class VisualFeatureExtractor:
             'saturation_std',
             'hue_mean',
             'hue_std',
+            'color_temperature',  # Warm vs cool tones
 
             # Composition features
             'edge_density',
@@ -35,13 +39,25 @@ class VisualFeatureExtractor:
             # Face/figure detection (simplified)
             'dark_regions_count',
             'bright_regions_count',
+
+            # Face detection features
+            'face_count',
+            'face_area_ratio',
+            'largest_face_y_position',
+
+            # Depth of field proxy
+            'dof_variance',
         ]
 
     def extract_features(self, image_path):
-        
+
         img = cv2.imread(str(image_path))
         if img is None:
             raise ValueError(f"Could not load image: {image_path}")
+
+        # Crop bottom 12% to remove subtitles
+        h, w = img.shape[:2]
+        img = img[0:int(h*0.88), :]  # Keep top 88%, drop bottom 12%
 
         # Convert to different color spaces
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -64,6 +80,10 @@ class VisualFeatureExtractor:
         features['saturation_std'] = np.std(s)
         features['hue_mean'] = np.mean(h)
         features['hue_std'] = np.std(h)
+
+        # Color temperature (warm vs cool)
+        b, g, r = cv2.split(img)
+        features['color_temperature'] = np.mean(r) / (np.mean(b) + np.mean(g) + 1e-7)
 
         # Composition features
         edges = cv2.Canny(gray, 100, 200)
@@ -102,6 +122,33 @@ class VisualFeatureExtractor:
 
         features['dark_regions_count'] = len([c for c in contours_dark if cv2.contourArea(c) > 100])
         features['bright_regions_count'] = len([c for c in contours_bright if cv2.contourArea(c) > 100])
+
+        # Face detection features
+        faces = self.face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=4, minSize=(30, 30))
+        features['face_count'] = len(faces)
+
+        if len(faces) > 0:
+            # Calculate total face area ratio
+            total_face_area = sum([w * h for (x, y, w, h) in faces])
+            features['face_area_ratio'] = total_face_area / (gray.shape[0] * gray.shape[1])
+
+            # Position of largest face (vertical, normalized)
+            largest_face = max(faces, key=lambda f: f[2] * f[3])
+            x, y, w, h = largest_face
+            features['largest_face_y_position'] = (y + h/2) / gray.shape[0]
+        else:
+            features['face_area_ratio'] = 0.0
+            features['largest_face_y_position'] = 0.5  # Default to center
+
+        # Depth of field proxy (sharpness variance across regions)
+        h_img, w_img = gray.shape
+        regions_sharpness = []
+        for i in range(3):
+            for j in range(3):
+                region = gray[i*h_img//3:(i+1)*h_img//3, j*w_img//3:(j+1)*w_img//3]
+                laplacian = cv2.Laplacian(region, cv2.CV_64F)
+                regions_sharpness.append(np.var(laplacian))
+        features['dof_variance'] = np.std(regions_sharpness)
 
         return features
 
