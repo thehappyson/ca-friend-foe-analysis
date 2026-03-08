@@ -50,6 +50,7 @@ data/manual_annotations/frames/**/*.jpg
 data/manual_annotations/frames/**/*.png
 data/frames/*.png
 data/videos/*.mp4
+data/videos/*.png
 
 # Training data CSVs (can be regenerated)
 data/training/features.csv
