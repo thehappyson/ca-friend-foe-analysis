@@ -12,11 +12,6 @@ Pillow>=8.0.0
 scikit-learn>=1.0.0
 joblib>=1.0.0
 
-# Jupyter
-jupyter>=1.0.0
-ipywidgets>=7.6.0
-notebook>=6.4.0
-
 # Utilities
 tqdm>=4.62.0
 pathlib>=1.0.1

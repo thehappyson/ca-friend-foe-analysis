@@ -1,8 +1,11 @@
 import argparse
+import sys
 from pathlib import Path
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.scene_detection import (
     SceneDetector,

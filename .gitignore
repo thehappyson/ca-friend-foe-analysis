@@ -106,3 +106,6 @@ env/
 *.tmp
 *.bak
 *.log
+
+# Model weights
+*.pt
