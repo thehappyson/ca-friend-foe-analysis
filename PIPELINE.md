@@ -106,7 +106,7 @@ python src/model.py \
 
 ---
 
-## Step 4b — Multi-Film Leave-One-Film-Out Cross-Validation
+## Step 4b — Multi-Film Leave-One-Movie-Out Cross-Validation
 
 Tests whether visual propaganda patterns **generalize across films** — the key research validation. Trains on N−1 films, tests on the held-out film, rotates through all films.
 
@@ -168,7 +168,7 @@ frames/<film_name>/                          ← extracted PNGs
 data/features/<film_name>_features.csv       ← visual features
 data/annotated/kevin/<film_name>_annotations.csv   ← labels
 results/<film_name>/                         ← single-film results
-results/multi_film/                          ← LOFO results
+results/multi_film/                          ← LOMO results
 ```
 
 Film names used in the project: `jud_suess`, `heimkehr`, `triumph_des_willens`, `hans_westmar`,

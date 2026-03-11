@@ -10,6 +10,7 @@ from sklearn.metrics import (
     classification_report,
     confusion_matrix,
     accuracy_score,
+    balanced_accuracy_score,
     precision_recall_fscore_support
 )
 import joblib
@@ -51,21 +52,25 @@ class MultiFilmClassifier:
 
         return X, y, frame_paths, feature_cols, film_name
 
-    def leave_one_film_out_cv(self, films_data: List[Tuple], output_dir: str = 'results/multi_film'):
+    def leave_one_movie_out_cv(self, films_data: List[Tuple], output_dir: str = 'results/multi_film', train_only_data: List[Tuple] = None):
         
         output_dir = Path(output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
 
         # Filter out None entries
         films_data = [f for f in films_data if f[0] is not None]
+        train_only_data = [f for f in (train_only_data or []) if f[0] is not None]
 
         if len(films_data) < 2:
             raise ValueError("Need at least 2 films for leave-one-out validation!")
 
         print("\n" + "="*80)
-        print("LEAVE-ONE-FILM-OUT CROSS-VALIDATION")
+        print("LEAVE-ONE-MOVIE-OUT CROSS-VALIDATION")
         print("="*80)
-        print(f"Total films: {len(films_data)}")
+        print(f"Total LOMO films: {len(films_data)}")
+        if train_only_data:
+            train_only_names = [f[4] for f in train_only_data]
+            print(f"Train-only films (always in training, never tested): {', '.join(train_only_names)}")
         print(f"Strategy: Train on {len(films_data)-1} films, test on 1 held-out film")
         print("="*80 + "\n")
 
@@ -95,6 +100,12 @@ class MultiFilmClassifier:
                 y_train_list.append(y_train_film)
                 train_film_names.append(film_name)
 
+            # Add train-only films to every fold
+            for X_to, y_to, _, _, film_name in train_only_data:
+                X_train_list.append(X_to)
+                y_train_list.append(y_to)
+                train_film_names.append(f"{film_name} [train-only]")
+
             X_train = np.vstack(X_train_list)
             y_train = np.concatenate(y_train_list)
 
@@ -119,13 +130,15 @@ class MultiFilmClassifier:
             # Evaluate
             y_pred = model.predict(X_test_scaled)
             acc = accuracy_score(y_test, y_pred)
+            bal_acc = balanced_accuracy_score(y_test, y_pred)
             precision, recall, f1, _ = precision_recall_fscore_support(y_test, y_pred, average='binary')
+            p_per, r_per, f1_per, _ = precision_recall_fscore_support(y_test, y_pred, average=None)
 
             print(f"\nResults on {test_film_name}:")
-            print(f"  Accuracy:  {acc:.3f}")
-            print(f"  Precision: {precision:.3f}")
-            print(f"  Recall:    {recall:.3f}")
-            print(f"  F1-Score:  {f1:.3f}")
+            print(f"  Accuracy:          {acc:.3f}  ← misleading with class imbalance")
+            print(f"  Balanced Accuracy: {bal_acc:.3f}  ← mean recall across both classes")
+            print(f"  Them  precision={p_per[0]:.3f}  recall={r_per[0]:.3f}  f1={f1_per[0]:.3f}")
+            print(f"  Us    precision={p_per[1]:.3f}  recall={r_per[1]:.3f}  f1={f1_per[1]:.3f}")
 
             # Classification report
             print("\nClassification Report:")
@@ -142,16 +155,23 @@ class MultiFilmClassifier:
                 'test_film': test_film_name,
                 'train_films': train_film_names,
                 'accuracy': acc,
+                'balanced_accuracy': bal_acc,
                 'precision': precision,
                 'recall': recall,
                 'f1': f1,
+                'precision_them': p_per[0],
+                'recall_them': r_per[0],
+                'f1_them': f1_per[0],
+                'precision_us': p_per[1],
+                'recall_us': r_per[1],
+                'f1_us': f1_per[1],
                 'confusion_matrix': cm,
                 'n_train': len(X_train),
                 'n_test': len(X_test)
             }
             self.results.append(fold_result)
 
-            all_accuracies.append(acc)
+            all_accuracies.append(bal_acc)
             all_precisions.append(precision)
             all_recalls.append(recall)
             all_f1s.append(f1)
@@ -189,13 +209,13 @@ class MultiFilmClassifier:
         print("\n" + "="*80)
         print("CROSS-VALIDATION SUMMARY")
         print("="*80)
-        print(f"Mean Accuracy:  {np.mean(all_accuracies):.3f} ± {np.std(all_accuracies):.3f}")
-        print(f"Mean Precision: {np.mean(all_precisions):.3f} ± {np.std(all_precisions):.3f}")
-        print(f"Mean Recall:    {np.mean(all_recalls):.3f} ± {np.std(all_recalls):.3f}")
-        print(f"Mean F1-Score:  {np.mean(all_f1s):.3f} ± {np.std(all_f1s):.3f}")
-        print("\nPer-film accuracies:")
+        print(f"Mean Balanced Accuracy: {np.mean(all_accuracies):.3f} ± {np.std(all_accuracies):.3f}")
+        print(f"Mean Precision:         {np.mean(all_precisions):.3f} ± {np.std(all_precisions):.3f}")
+        print(f"Mean Recall:            {np.mean(all_recalls):.3f} ± {np.std(all_recalls):.3f}")
+        print(f"Mean F1-Score:          {np.mean(all_f1s):.3f} ± {np.std(all_f1s):.3f}")
+        print("\nPer-film balanced accuracies:")
         for result in self.results:
-            print(f"  {result['test_film']}: {result['accuracy']:.3f}")
+            print(f"  {result['test_film']}: {result['balanced_accuracy']:.3f}  (them recall={result['recall_them']:.3f}, us recall={result['recall_us']:.3f})")
         print("="*80 + "\n")
 
         # Save summary results
@@ -294,7 +314,7 @@ class MultiFilmClassifier:
 
         plt.xlabel('Test Film', fontsize=12, fontweight='bold')
         plt.ylabel('Accuracy', fontsize=12, fontweight='bold')
-        plt.title('Leave-One-Film-Out Cross-Validation Results', fontsize=14, fontweight='bold')
+        plt.title('Leave-One-Movie-Out Cross-Validation Results', fontsize=14, fontweight='bold')
         plt.ylim(0, 1.0)
         plt.legend(fontsize=11)
         plt.xticks(rotation=45, ha='right')
@@ -342,9 +362,9 @@ class MultiFilmClassifier:
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Multi-film leave-one-film-out cross-validation',
+        description='Multi-film leave-one-movie-out cross-validation',
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog=
+        epilog=''
     )
 
     parser.add_argument(
@@ -369,6 +389,12 @@ def main():
         help='Output directory for results'
     )
     parser.add_argument(
+        '--train-only-films',
+        nargs='+',
+        default=[],
+        help='Films always included in training but never used as test fold (e.g. severely imbalanced films)'
+    )
+    parser.add_argument(
         '--random-state',
         type=int,
         default=42,
@@ -379,7 +405,7 @@ def main():
 
     print("\n" + "="*80)
     print("MULTI-FILM US VS THEM CLASSIFIER")
-    print("Leave-One-Film-Out Cross-Validation")
+    print("Leave-One-Movie-Out Cross-Validation")
     print("="*80)
     print(f"Films: {', '.join(args.films)}")
     print(f"Output: {args.output}")
@@ -390,6 +416,20 @@ def main():
     films_data = []
 
     print("Loading film data...")
+    train_only_films_data = []
+    for film_name in args.train_only_films:
+        features_csv = Path(args.features_dir) / f'{film_name}_features.csv'
+        annotations_csv = Path(args.annotations_dir) / f'{film_name}_annotations.csv'
+        if not features_csv.exists():
+            print(f"WARNING: Features not found for train-only film {film_name}: {features_csv}")
+            continue
+        if not annotations_csv.exists():
+            print(f"WARNING: Annotations not found for train-only film {film_name}: {annotations_csv}")
+            continue
+        film_data = classifier.load_film_data(str(features_csv), str(annotations_csv), film_name)
+        if film_data[0] is not None:
+            train_only_films_data.append(film_data)
+
     for film_name in args.films:
         features_csv = Path(args.features_dir) / f'{film_name}_features.csv'
         annotations_csv = Path(args.annotations_dir) / f'{film_name}_annotations.csv'
@@ -409,8 +449,8 @@ def main():
         print("\nERROR: Need at least 2 films with valid data!")
         return
 
-    # Run leave-one-film-out CV
-    summary = classifier.leave_one_film_out_cv(films_data, output_dir=args.output)
+    # Run leave-one-movie-out CV
+    summary = classifier.leave_one_movie_out_cv(films_data, output_dir=args.output, train_only_data=train_only_films_data)
 
     print("\n" + "="*80)
     print("COMPLETE!")
