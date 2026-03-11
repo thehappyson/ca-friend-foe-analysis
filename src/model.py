@@ -9,6 +9,7 @@ from sklearn.metrics import (
     classification_report,
     confusion_matrix,
     accuracy_score,
+    balanced_accuracy_score,
     precision_recall_fscore_support
 )
 from sklearn.preprocessing import StandardScaler
@@ -87,13 +88,16 @@ class FriendFoeClassifier:
 
         # Compute metrics
         acc = accuracy_score(y, y_pred)
+        bal_acc = balanced_accuracy_score(y, y_pred)
         precision, recall, f1, support = precision_recall_fscore_support(y, y_pred, average='binary')
+        p_per_class, r_per_class, f1_per_class, support_per_class = precision_recall_fscore_support(y, y_pred, average=None)
 
         print("\n=== Evaluation Results ===")
-        print(f"Accuracy: {acc:.3f}")
-        print(f"Precision: {precision:.3f}")
-        print(f"Recall: {recall:.3f}")
-        print(f"F1-Score: {f1:.3f}")
+        print(f"Accuracy:          {acc:.3f}  ← misleading with class imbalance")
+        print(f"Balanced Accuracy: {bal_acc:.3f}  ← mean recall across both classes")
+        print(f"\nPer-class breakdown:")
+        for i, name in enumerate(label_names):
+            print(f"  {name:6s}  precision={p_per_class[i]:.3f}  recall={r_per_class[i]:.3f}  f1={f1_per_class[i]:.3f}  n={support_per_class[i]}")
 
         print("\nClassification Report:")
         print(classification_report(y, y_pred, target_names=label_names))
@@ -104,9 +108,16 @@ class FriendFoeClassifier:
 
         return {
             'accuracy': acc,
+            'balanced_accuracy': bal_acc,
             'precision': precision,
             'recall': recall,
             'f1': f1,
+            'precision_them': p_per_class[0],
+            'recall_them': r_per_class[0],
+            'f1_them': f1_per_class[0],
+            'precision_us': p_per_class[1],
+            'recall_us': r_per_class[1],
+            'f1_us': f1_per_class[1],
             'confusion_matrix': cm,
             'predictions': y_pred
         }
@@ -114,9 +125,9 @@ class FriendFoeClassifier:
     def cross_validate(self, X, y, cv=5):
         
         X_scaled = self.scaler.fit_transform(X)
-        scores = cross_val_score(self.model, X_scaled, y, cv=cv, scoring='accuracy')
+        scores = cross_val_score(self.model, X_scaled, y, cv=cv, scoring='balanced_accuracy')
 
-        print(f"\nCross-validation scores ({cv} folds):")
+        print(f"\nCross-validation balanced accuracy ({cv} folds):")
         print(f"Scores: {scores}")
         print(f"Mean: {scores.mean():.3f} (+/- {scores.std() * 2:.3f})")
 
@@ -248,9 +259,13 @@ def train_and_evaluate_pipeline(features_csv, annotations_csv, test_size=0.2, ou
         # Save evaluation results
         results_df = pd.DataFrame([{
             'accuracy': results['accuracy'],
-            'precision': results['precision'],
-            'recall': results['recall'],
-            'f1': results['f1'],
+            'balanced_accuracy': results['balanced_accuracy'],
+            'precision_them': results['precision_them'],
+            'recall_them': results['recall_them'],
+            'f1_them': results['f1_them'],
+            'precision_us': results['precision_us'],
+            'recall_us': results['recall_us'],
+            'f1_us': results['f1_us'],
             'cv_mean': cv_scores.mean(),
             'cv_std': cv_scores.std()
         }])
