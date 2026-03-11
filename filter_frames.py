@@ -18,7 +18,7 @@ from ultralytics import YOLO
 # ============================================================
 
 # Folder containing the extracted frame images
-FRAMES_DIR = "./data/frames"
+FRAMES_DIR = "./data/frames/heimkehr"
 
 # Confidence threshold for person detections (0.0 - 1.0)
 CONFIDENCE_THRESHOLD = 0.5
