@@ -79,6 +79,7 @@ results/**/*.jpg
 results/**/*.pdf
 results/*.joblib
 !results/.gitkeep
+!results/images_for_report/**
 
 # IDE
 .vscode/
