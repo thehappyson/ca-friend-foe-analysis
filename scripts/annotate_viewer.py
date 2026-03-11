@@ -175,9 +175,9 @@ class FrameViewer:
                 self.label_current('unlabeled')
 
             # Navigation
-            elif key == 83 or key == ord('d') or key == ord('D'):  # Right arrow or D
+            elif key == 83 or key == 3 or key == ord('d') or key == ord('D'):  # Right arrow or D
                 self.next_frame()
-            elif key == 81 or key == ord('a') or key == ord('A'):  # Left arrow or A
+            elif key == 81 or key == 2 or key == ord('a') or key == ord('A'):  # Left arrow or A
                 self.prev_frame()
 
             # Commands
