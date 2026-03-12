@@ -46,9 +46,12 @@ ANNOTATION_FILES = [
     ("Hans Westmar", "../data/annotated/kevin/hans_westmar_annotations.csv")
 ]
 
-# Name to fill in for annotations with missing annotator
-DEFAULT_ANNOTATOR_NAME = "annotator_2"
-
+# Annotator Mappings
+#DEFAULT_ANNOTATOR_NAME = "annotator_2"
+ANNOTATOR_ALIASES = {
+    "Kevin" : "Annotator 1",
+    "Felix" : "Annotator 2"
+}
 # Default label for frames with missing labels (applied in-memory only, not saved)
 DEFAULT_LABEL = "other"
 
@@ -68,11 +71,13 @@ def load_annotations(annotation_files):
         df = pd.read_csv(csv_path)
 
         # Fill missing annotator names and save back to original file
-        if df["annotator"].isna().any():
-            df["annotator"] = df["annotator"].fillna(DEFAULT_ANNOTATOR_NAME)
-            df.to_csv(csv_path, index=False)
-            print(f"Filled missing annotator names in '{csv_path}' with '{DEFAULT_ANNOTATOR_NAME}'")
+        #if df["annotator"].isna().any():
+        #    df["annotator"] = df["annotator"].fillna(DEFAULT_ANNOTATOR_NAME)
+        #    df.to_csv(csv_path, index=False)
+        #    print(f"Filled missing annotator names in '{csv_path}' with '{DEFAULT_ANNOTATOR_NAME}'")
 
+        # Replace annotator names with aliases
+        df["annotator"] = df["annotator"].map(ANNOTATOR_ALIASES).fillna(df["annotator"])
         df["film"] = film_name
 
         # Fill missing labels in-memory only (not saved back)
