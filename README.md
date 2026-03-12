@@ -25,15 +25,15 @@ The analysis focuses on the ideological primary enemies of Nazi ideology — Jew
 
 ## Results Summary
 
-| Film | Samples (us/them) | Balanced Acc. (within-film) |
-|------|-------------------|-----------------------------|
-| *Jud Süß* (1940) | 171 / 178 | 64.5% |
-| *Heimkehr* (1941) | 216 / 89 | 62.5% |
-| *Hans Westmar* (1933) | 99 / 115 | — |
+| Film | Samples (us/them) | Balanced CV-Acc. (5-fold) | CV Std. |
+|------|-------------------|---------------------------|---------|
+| *Jud Süß* (1940) | 171 / 178 | 62.4% | ±5.1% |
+| *Heimkehr* (1941) | 216 / 89 | 56.4% | ±10.9% |
+| *Hans Westmar* (1933) | 105 / 113 | 59.7% | ±11.0% |
 
-**Leave-One-Movie-Out CV (LOMOCV):** 52.2% ± 4.2% balanced accuracy across 3 films.
+**Leave-One-Movie-Out CV (LOMOCV):** 54.0% ± 5.9% balanced accuracy across 3 films.
 
-Within-film classification works (62–65%), indicating that visual features do capture ingroup/outgroup differences within a single film. However, cross-film generalization is near chance level, suggesting that the visual grammar of propaganda is film- and context-specific rather than following a single unified doctrine across enemy types (antisemitic, anti-Slavic, anti-Bolshevik).
+Within-film classification works (56–65%), indicating that visual features do capture ingroup/outgroup differences within a single film. However, cross-film generalization is near chance level, suggesting that the visual grammar of propaganda is film- and context-specific rather than following a single unified doctrine across enemy types (antisemitic, anti-Slavic, anti-Bolshevik).
 
 **Top features (consistent across films):** `dof_variance`, `contrast`, `mean_brightness`, `edge_density`, `texture_contrast`
 
@@ -136,12 +136,10 @@ See [PIPELINE.md](PIPELINE.md) for full step-by-step documentation.
 ├── results/
 │   ├── jud_suess/              # Single-film results
 │   ├── heimkehr/               # Single-film results
+│   ├── hans_westmar/           # Single-film results
 │   ├── multi_film/             # LOMOCV results
 │   └── images_for_report/      # Figures for the paper
-├── report/
-│   └── main.tex                # LaTeX report
 ├── PIPELINE.md                 # Step-by-step pipeline documentation
-├── CLAUDE.md                   # Developer/AI assistant guidance
 └── requirements.txt
 ```
 
