@@ -50,10 +50,12 @@ ANNOTATION_FILES = [
 #DEFAULT_ANNOTATOR_NAME = "annotator_2"
 ANNOTATOR_ALIASES = {
     "Kevin" : "Annotator 1",
-    "Felix" : "Annotator 2"
+    "Felix" : "Annotator 2",
+    "annotator_2" : "Annotator 1" #corrects a wrong assignment in the manual annotations
 }
 # Default label for frames with missing labels (applied in-memory only, not saved)
 DEFAULT_LABEL = "other"
+LABELS_TO_REPLACE = ["neutral"]
 
 # Output directory for plots
 OUTPUT_DIR = "../results/annotation_overview"
@@ -85,6 +87,12 @@ def load_annotations(annotation_files):
             n_missing = df["label"].isna().sum()
             df["label"] = df["label"].fillna(DEFAULT_LABEL)
             print(f"Note: filled {n_missing} missing label(s) in '{csv_path}' with '{DEFAULT_LABEL}' (in-memory only)")
+
+        mask = df["label"].isin(LABELS_TO_REPLACE)
+        if mask.any():
+            print(
+                f"Note: replaced {mask.sum()} '{df.loc[mask, 'label'].unique().tolist()}' label(s) in '{csv_path}' with '{DEFAULT_LABEL}' (in-memory only)")
+            df.loc[mask, "label"] = DEFAULT_LABEL
 
         # Extract frame identifier (filename only, so annotators match on the same frame)
         df["frame_id"] = df["frame_path"].apply(lambda p: Path(p).stem)
@@ -187,6 +195,8 @@ def compute_agreement(df, output_dir):
     """Compute and display inter-annotator agreement per film."""
     films = sorted(df["film"].unique())
     results = []
+    all_labels1 = []  # collect for pooled metrics
+    all_labels2 = []
 
     for film in films:
         film_df = df[df["film"] == film]
@@ -209,11 +219,21 @@ def compute_agreement(df, output_dir):
         labels1 = df1.loc[common, "label"].values
         labels2 = df2.loc[common, "label"].values
 
+        # Collect for pooled computation
+        all_labels1.extend(labels1)
+        all_labels2.extend(labels2)
+
         # Cohen's Kappa
         kappa = cohen_kappa_score(labels1, labels2, labels=LABELS)
 
+        # PABAK
+        n = len(labels1)
+        k = len(LABELS)
+        po = np.mean(labels1 == labels2)
+        pabak = (k * po - 1) / (k - 1)
+
         # Percent agreement
-        agreement_pct = np.mean(labels1 == labels2)
+        agreement_pct = po
 
         # Per-label agreement
         per_label = {}
@@ -231,6 +251,7 @@ def compute_agreement(df, output_dir):
             "n_common": len(common),
             "agreement_pct": agreement_pct,
             "cohens_kappa": kappa,
+            "pabak": pabak,
             **{f"agreement_{lbl}": per_label[lbl] for lbl in LABELS},
         })
 
@@ -240,6 +261,27 @@ def compute_agreement(df, output_dir):
 
     if results:
         results_df = pd.DataFrame(results)
+
+        # --- Pooled metrics (all frames across films) ---
+        all_labels1 = np.array(all_labels1)
+        all_labels2 = np.array(all_labels2)
+        pooled_kappa = cohen_kappa_score(all_labels1, all_labels2, labels=LABELS)
+        pooled_po = np.mean(all_labels1 == all_labels2)
+        pooled_pabak = (len(LABELS) * pooled_po - 1) / (len(LABELS) - 1)
+
+        pooled_per_label = {}
+        for lbl in LABELS:
+            mask = (all_labels1 == lbl) | (all_labels2 == lbl)
+            if mask.sum() > 0:
+                pooled_per_label[lbl] = np.mean(all_labels1[mask] == all_labels2[mask])
+            else:
+                pooled_per_label[lbl] = float("nan")
+
+        # --- Average metrics (unweighted mean across films) ---
+        avg_agreement = results_df["agreement_pct"].mean()
+        avg_per_label = {lbl: results_df[f"agreement_{lbl}"].mean() for lbl in LABELS}
+
+        # --- Print results ---
         print("\n" + "=" * 70)
         print("INTER-ANNOTATOR AGREEMENT")
         print("=" * 70)
@@ -249,9 +291,52 @@ def compute_agreement(df, output_dir):
             print(f"  Common frames: {row['n_common']}")
             print(f"  Agreement: {row['agreement_pct']:.1%}")
             print(f"  Cohen's Kappa: {row['cohens_kappa']:.3f}")
+            print(f"  PABAK: {row['pabak']:.3f}")
             for lbl in LABELS:
                 val = row[f"agreement_{lbl}"]
                 print(f"    {lbl}: {val:.1%}" if not np.isnan(val) else f"    {lbl}: n/a")
+
+        print(f"\n  {'─' * 50}")
+        print(f"  POOLED (all {len(all_labels1)} frames)")
+        print(f"  Agreement: {pooled_po:.1%}")
+        print(f"  Cohen's Kappa: {pooled_kappa:.3f}")
+        print(f"  PABAK: {pooled_pabak:.3f}")
+        for lbl in LABELS:
+            val = pooled_per_label[lbl]
+            print(f"    {lbl}: {val:.1%}" if not np.isnan(val) else f"    {lbl}: n/a")
+
+        print(f"\n  {'─' * 50}")
+        print(f"  AVERAGE (unweighted mean over {len(results)} films)")
+        print(f"  Agreement: {avg_agreement:.1%}")
+        for lbl in LABELS:
+            val = avg_per_label[lbl]
+            print(f"    {lbl}: {val:.1%}" if not np.isnan(val) else f"    {lbl}: n/a")
+
+        # --- Save to CSV with summary rows ---
+        pooled_row = {
+            "film": "POOLED",
+            "annotator_1": "",
+            "annotator_2": "",
+            "n_common": len(all_labels1),
+            "agreement_pct": pooled_po,
+            "cohens_kappa": pooled_kappa,
+            "pabak": pooled_pabak,
+            **{f"agreement_{lbl}": pooled_per_label[lbl] for lbl in LABELS},
+        }
+        avg_row = {
+            "film": "AVERAGE",
+            "annotator_1": "",
+            "annotator_2": "",
+            "n_common": "",
+            "agreement_pct": avg_agreement,
+            "cohens_kappa": "",
+            "pabak": "",
+            **{f"agreement_{lbl}": avg_per_label[lbl] for lbl in LABELS},
+        }
+        results_df = pd.concat(
+            [results_df, pd.DataFrame([pooled_row, avg_row])],
+            ignore_index=True,
+        )
 
         csv_path = Path(output_dir) / "agreement_summary.csv"
         results_df.to_csv(csv_path, index=False)
