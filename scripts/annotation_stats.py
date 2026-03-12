@@ -34,12 +34,12 @@ warnings.filterwarnings("ignore")
 # List of (film_name, csv_path) tuples — one entry per annotator per film.
 # Films with two annotators will get agreement metrics.
 ANNOTATION_FILES = [
-    ("Feine", "../data/annotated/felix/feinde_annotated.csv"),
+    #("Feinde", "../data/annotated/felix/feinde_annotated.csv"),
     ("Heimkehr", "../data/annotated/felix/heimkehr_annotated.csv"),
     ("Jud Süß", "../data/annotated/felix/jud_suess_annotated.csv"),
     ("Triumph des Willens", "../data/annotated/felix/triumph_des_willens_annotated.csv"),
     ("Hans Westmar", "../data/annotated/felix/westmar_annotated.csv"),
-    ("Feine", "../data/annotated/kevin/feinde_annotations.csv"),
+    #("Feinde", "../data/annotated/kevin/feinde_annotations.csv"),
     ("Heimkehr", "../data/annotated/kevin/heimkehr_annotations.csv"),
     ("Jud Süß", "../data/annotated/kevin/jud_suess_annotations.csv"),
     ("Triumph des Willens", "../data/annotated/kevin/triumph_des_willens_annotations.csv"),
