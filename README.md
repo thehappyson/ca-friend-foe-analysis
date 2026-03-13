@@ -92,6 +92,7 @@ Four additional films were annotated and processed (*Der ewige Jude*, *SA-Mann B
 | *Jud Süß* | 1940 | Feature | Antisemitic |
 | *Heimkehr* | 1941 | Feature | Anti-Polish/Slavic |
 
+Die extrahierten Frames können bis einschließlich 31.05.2026 unter https://speicherwolke.uni-leipzig.de/index.php/s/6ZEiPRkQrybADRz abgerufen werden. Das Passwort findet sich in dem Report.
 ---
 
 ## Quick Start
