@@ -42,7 +42,7 @@ Within-film classification works (56–65%), indicating that visual features do 
 Four additional films were annotated and processed (*Der ewige Jude*, *SA-Mann Brand*, *Feinde*, *Hitlerjunge Quex*) but excluded from the final baseline and LOMOCV results due to:
 
 - **Video quality issues:** Significant noise in color and resolution across source copies, introducing systematic artifacts into low-level visual features.
-- **Class imbalance:** Insufficient annotatable `us`-frames in some films made balanced training infeasible.
+- **Class imbalance:** Severe imbalance between `us` and `them` frames made balanced training infeasible.
 - **Lack of corpus heterogeneity:** These films did not introduce new enemy types or new ingroup constructions beyond those already covered by the three retained films, making their marginal contribution to generalization testing negligible while their quality issues added confounds.
 
 ---

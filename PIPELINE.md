@@ -129,10 +129,10 @@ python scripts/train_multi_film.py \
   --output results/multi_film
 ```
 
-**Example (4 films — recommended):**
+**Example (3 films — final corpus):**
 ```bash
 python scripts/train_multi_film.py \
-  --films jud_suess heimkehr triumph_des_willens feinde \
+  --films jud_suess heimkehr hans_westmar \
   --features-dir data/features \
   --annotations-dir data/annotated/kevin \
   --output results/multi_film
@@ -146,18 +146,21 @@ python scripts/train_multi_film.py \
 > - `feature_importance_consistency.png`
 > - `fold_N_<film>/model.joblib` — per-fold trained models
 
-**Success threshold:** >70% mean accuracy across folds indicates systematic visual patterns that generalize across films.
+**Interpretation:** Results near chance level (~50%) indicate film-specific rather than systematic cross-film visual patterns. Results clearly above chance (>60%) would suggest generalizable propaganda strategies.
 
 ---
 
 ## Current Results
 
-| Film | Samples (us/them) | Test Accuracy | CV Mean |
-|------|-------------------|---------------|---------|
-| Jud Süß | 170 / 179 | 64.3% | 63.6% |
-| Heimkehr | 216 / 89 | 72.1% | 65.9% |
+| Film | Samples (us/them) | Test Accuracy | Balanced CV-Acc. (5-fold) | CV Std. |
+|------|-------------------|---------------|---------------------------|---------|
+| *Jud Süß* (1940) | 171 / 178 | 74.3% | 62.4% | ±5.1% |
+| *Heimkehr* (1941) | 216 / 89 | 62.5% | 56.4% | ±10.9% |
+| *Hans Westmar* (1933) | 105 / 113 | 79.6% | 59.7% | ±11.0% |
 
-**Top features (consistent across films):** `dof_variance`, `contrast`, `color_temperature`, `edge_density`, `texture_contrast`
+**LOMOCV (3 films):** 54.0% ± 5.9% balanced accuracy — near chance level, indicating film-specific rather than cross-film generalizable patterns.
+
+**Top features (consistent across LOMOCV folds):** `dof_variance`, `contrast`, `mean_brightness`, `edge_density`, `texture_contrast`
 
 ---
 
