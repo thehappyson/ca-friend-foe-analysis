@@ -19,7 +19,7 @@ The analysis focuses on the ideological primary enemies of Nazi ideology — Jew
 
 ![Annotation Examples](results/images_for_report/annotation_examples_figure.png)
 
-*Left column: frames labeled **us** (ingroup) — bright, centered, ordered compositions. Right column: frames labeled **them** (outgroup) — dark, low-key lighting, dramatic staging. Film: Jud Süß (1940).*
+*First row: frames labeled **us** (ingroup) — bright, centered, ordered compositions. Second row: frames labeled **them** (outgroup) — dark, low-key lighting, dramatic staging. Film: Jud Süß (1940).*
 
 ---
 
@@ -94,9 +94,6 @@ Four additional films were annotated and processed (*Der ewige Jude*, *SA-Mann B
 
 *Die extrahierten Frames können bis einschließlich 31.05.2026 unter https://speicherwolke.uni-leipzig.de/index.php/s/6ZEiPRkQrybADRz abgerufen werden. Das Passwort findet sich in dem Report.*
 
----
-
-Die extrahierten Frames können bis einschließlich 31.05.2026 unter https://speicherwolke.uni-leipzig.de/index.php/s/6ZEiPRkQrybADRz abgerufen werden. Das Passwort findet sich in dem Report.
 ---
 
 ## Quick Start
