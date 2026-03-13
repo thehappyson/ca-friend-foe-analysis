@@ -41,8 +41,6 @@ data/videos/**/*.mov
 *.mov
 
 frames/
-CLAUDE.md
-
 # Extracted frames (training data - can be hundreds of images)
 data/raw/**/*.jpg
 data/raw/**/*.png
