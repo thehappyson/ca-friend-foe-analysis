@@ -101,17 +101,12 @@ def load_annotations(annotation_files):
 
 
 def plot_label_distribution(df, output_dir):
-    """Bar chart of label distribution per film, split by annotator."""
-    films = df["film"].unique()
-    n_films = len(films)
-
-    fig, axes = plt.subplots(1, n_films, figsize=(5 * n_films, 4), squeeze=False)
-    fig.suptitle("Label Distribution per Film", fontsize=14, fontweight="bold", y=1.02)
-
-    for i, film in enumerate(sorted(films)):
-        ax = axes[0, i]
+    """Bar chart of label distribution per film, split by annotator. One file per film."""
+    for film in sorted(df["film"].unique()):
         film_df = df[df["film"] == film]
         annotators = sorted(film_df["annotator"].unique())
+
+        fig, ax = plt.subplots(figsize=(5, 4))
 
         x = np.arange(len(LABELS))
         width = 0.35 if len(annotators) == 2 else 0.5
@@ -132,18 +127,19 @@ def plot_label_distribution(df, output_dir):
                     ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.5,
                             str(count), ha="center", va="bottom", fontsize=9)
 
-        ax.set_title(film, fontsize=12)
+        ax.set_title(film, fontsize=12, fontweight="bold")
         ax.set_xticks(x)
         ax.set_xticklabels(LABELS)
         ax.set_ylabel("Frame count")
         if len(annotators) > 1:
             ax.legend(fontsize=8)
 
-    plt.tight_layout()
-    path = Path(output_dir) / "label_distributions.png"
-    fig.savefig(path, dpi=150, bbox_inches="tight")
-    plt.close(fig)
-    print(f"Saved: {path}")
+        plt.tight_layout()
+        safe_film = film.replace(" ", "_").lower()
+        path = Path(output_dir) / f"label_distribution_{safe_film}.png"
+        fig.savefig(path, dpi=150, bbox_inches="tight")
+        plt.close(fig)
+        print(f"Saved: {path}")
 
 
 def plot_label_proportions(df, output_dir):
