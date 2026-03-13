@@ -262,6 +262,7 @@ class MultiFilmClassifier:
                 'n_train': r['n_train'],
                 'n_test': r['n_test'],
                 'accuracy': r['accuracy'],
+                'balanced_accuracy': r['balanced_accuracy'],
                 'precision': r['precision'],
                 'recall': r['recall'],
                 'f1': r['f1']
@@ -273,11 +274,11 @@ class MultiFilmClassifier:
 
         # Summary statistics
         summary_df = pd.DataFrame([{
-            'metric': 'accuracy',
-            'mean': results_df['accuracy'].mean(),
-            'std': results_df['accuracy'].std(),
-            'min': results_df['accuracy'].min(),
-            'max': results_df['accuracy'].max()
+            'metric': 'balanced_accuracy',
+            'mean': results_df['balanced_accuracy'].mean(),
+            'std': results_df['balanced_accuracy'].std(),
+            'min': results_df['balanced_accuracy'].min(),
+            'max': results_df['balanced_accuracy'].max()
         }, {
             'metric': 'precision',
             'mean': results_df['precision'].mean(),
