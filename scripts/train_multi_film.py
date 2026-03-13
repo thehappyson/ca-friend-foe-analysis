@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import pandas as pd
 import numpy as np
 from pathlib import Path
@@ -53,7 +52,7 @@ class MultiFilmClassifier:
         return X, y, frame_paths, feature_cols, film_name
 
     def leave_one_movie_out_cv(self, films_data: List[Tuple], output_dir: str = 'results/multi_film', train_only_data: List[Tuple] = None):
-        
+
         output_dir = Path(output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -236,7 +235,7 @@ class MultiFilmClassifier:
         return summary
 
     def _plot_confusion_matrix(self, cm, title='Confusion Matrix', output_path=None):
-        
+
         plt.figure(figsize=(8, 6))
         sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
                     xticklabels=['Them', 'Us'],
@@ -253,7 +252,7 @@ class MultiFilmClassifier:
             plt.show()
 
     def _save_results(self, output_dir: Path):
-        
+
         # Per-fold results
         results_df = pd.DataFrame([
             {
@@ -326,7 +325,7 @@ class MultiFilmClassifier:
         print(f"✓ Saved accuracy plot to {output_dir / 'per_film_accuracies.png'}")
 
     def _analyze_feature_consistency(self, output_dir: Path):
-        
+
         # Combine all feature importances
         all_importance = pd.concat(self.feature_importance_across_folds, ignore_index=True)
 

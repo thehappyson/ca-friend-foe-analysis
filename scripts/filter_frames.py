@@ -1,13 +1,3 @@
-"""
-Filter extracted frames: keep only those containing people, delete the rest.
-
-Usage:
-    python filter_people_frames.py
-
-Requires:
-    pip install ultralytics
-"""
-
 import os
 from pathlib import Path
 from ultralytics import YOLO

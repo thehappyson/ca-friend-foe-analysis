@@ -1,8 +1,3 @@
-#!/usr/bin/env python3
-"""
-Quick test of the entire pipeline using synthetic data.
-Run this to verify everything is working before using real video data.
-"""
 import sys
 from pathlib import Path
 

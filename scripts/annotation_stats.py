@@ -1,22 +1,3 @@
-"""
-Annotation overview: per-film label distributions and inter-annotator agreement.
-
-Usage:
-    python annotation_overview.py
-
-Expects CSV files produced by annotate_frames.py with columns:
-    frame_path, label, confidence, notes, annotator, timestamp
-
-Labels are: 'us', 'them', 'neutral' (exactly one per frame).
-
-Outputs:
-    - Per-film label distribution bar charts
-    - Annotator comparison per film (if two annotators exist)
-    - Cohen's Kappa inter-annotator agreement
-    - Confusion matrix between annotators
-    - Summary table printed to console
-"""
-
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
