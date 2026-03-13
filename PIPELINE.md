@@ -155,10 +155,10 @@ python scripts/train_multi_film.py \
 | Film | Samples (us/them) | Test Accuracy | Balanced CV-Acc. (5-fold) | CV Std. |
 |------|-------------------|---------------|---------------------------|---------|
 | *Jud Süß* (1940) | 171 / 178 | 74.3% | 62.4% | ±5.1% |
-| *Heimkehr* (1941) | 216 / 89 | 62.5% | 56.4% | ±10.9% |
+| *Heimkehr* (1941) | 140 / 64 | 62.1% | 50.0% | ±13.3% |
 | *Hans Westmar* (1933) | 105 / 113 | 79.6% | 59.7% | ±11.0% |
 
-**LOMOCV (3 films):** 54.0% ± 5.9% balanced accuracy — near chance level, indicating film-specific rather than cross-film generalizable patterns.
+**LOMOCV (3 films):** 53.3% ± 5.1% balanced accuracy — near chance level, indicating film-specific rather than cross-film generalizable patterns.
 
 **Top features (consistent across LOMOCV folds):** `dof_variance`, `contrast`, `mean_brightness`, `edge_density`, `texture_contrast`
 
