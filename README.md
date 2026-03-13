@@ -28,12 +28,12 @@ The analysis focuses on the ideological primary enemies of Nazi ideology — Jew
 | Film | Samples (us/them) | Balanced CV-Acc. (5-fold) | CV Std. |
 |------|-------------------|---------------------------|---------|
 | *Jud Süß* (1940) | 171 / 178 | 62.4% | ±5.1% |
-| *Heimkehr* (1941) | 216 / 89 | 56.4% | ±10.9% |
+| *Heimkehr* (1941) | 140 / 64 | 50.0% | ±13.3% |
 | *Hans Westmar* (1933) | 105 / 113 | 59.7% | ±11.0% |
 
-**Leave-One-Movie-Out CV (LOMOCV):** 54.0% ± 5.9% accuracy across 3 films.
+**Leave-One-Movie-Out CV (LOMOCV):** 53.3% ± 5.1% balanced accuracy across 3 films.
 
-Within-film classification works (56–65%), indicating that visual features do capture ingroup/outgroup differences within a single film. However, cross-film generalization is near chance level, suggesting that the visual grammar of propaganda is film- and context-specific rather than following a single unified doctrine across enemy types (antisemitic, anti-Slavic, anti-Bolshevik).
+Within-film classification works (50–62%), indicating that visual features do capture ingroup/outgroup differences within a single film. However, cross-film generalization is near chance level, suggesting that the visual grammar of propaganda is film- and context-specific rather than following a single unified doctrine across enemy types (antisemitic, anti-Slavic, anti-Bolshevik).
 
 **Top features (consistent across films):** `dof_variance`, `contrast`, `mean_brightness`, `edge_density`, `texture_contrast`
 
